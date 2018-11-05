@@ -68,7 +68,7 @@ public class TagGroup extends ViewGroup {
 	private final float default_horizontal_padding;
 	private final float default_vertical_padding;
 
-	enum Mode {
+	public enum Mode {
 		DISPLAY,
 		CHECKABLE,
 		APPEND
@@ -563,6 +563,56 @@ public class TagGroup extends ViewGroup {
 		mOnTagClickListener = l;
 	}
 
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
+	public List<TagView> getTagViews() {
+		final int count = getChildCount();
+		List<TagView> list = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			final TagView tag = getTagAt(i);
+			list.add(tag);
+		}
+		return list;
+	}
+
+	public List<TagView> getCheckedTagViews() {
+		final int count = getChildCount();
+		List<TagView> list = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			final TagView tag = getTagAt(i);
+			if(tag.isChecked) {
+				list.add(tag);
+			}
+		}
+		return list;
+	}
+
+	public List<String> getCheckedTags() {
+		final int count = getChildCount();
+		List<String> list = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			final TagView tag = getTagAt(i);
+			if(tag.isChecked) {
+				list.add(tag.getText().toString());
+			}
+		}
+		return list;
+	}
+
+	public List<Integer> getCheckedIndexList() {
+		final int count = getChildCount();
+		List<Integer> list = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			final TagView tag = getTagAt(i);
+			if(tag.isChecked) {
+				list.add(i);
+			}
+		}
+		return list;
+	}
+
 	protected void deleteTag(TagView tagView) {
 		removeView(tagView);
 		if (mOnTagChangeListener != null) {
@@ -688,8 +738,14 @@ public class TagGroup extends ViewGroup {
 					}
 					break;
 				}
+				case CHECKABLE: {
+					tag.setChecked(!tag.isChecked);
+					if (mOnTagClickListener != null) {
+						mOnTagClickListener.onTagClick(tag.getText().toString());
+					}
+					break;
+				}
 				case DISPLAY:
-				case CHECKABLE:
 				default: {
 					if (mOnTagClickListener != null) {
 						mOnTagClickListener.onTagClick(tag.getText().toString());
@@ -902,7 +958,7 @@ public class TagGroup extends ViewGroup {
 			// Make the checked mark drawing region.
 			setPadding(horizontalPadding,
 					verticalPadding,
-					isChecked ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET)
+					((mode == Mode.APPEND) && isChecked) ? (int) (horizontalPadding + getHeight() / 2.5f + CHECKED_MARKER_OFFSET)
 							: horizontalPadding,
 					verticalPadding);
 			invalidatePaint();
@@ -963,8 +1019,19 @@ public class TagGroup extends ViewGroup {
 					break;
 				}
 
+				case CHECKABLE: {
+					if (isChecked) {
+						mBorderPaint.setColor(checkedBorderColor);
+						mBackgroundPaint.setColor(checkedBackgroundColor);
+						setTextColor(checkedTextColor);
+					} else {
+						mBorderPaint.setColor(borderColor);
+						mBackgroundPaint.setColor(backgroundColor);
+						setTextColor(textColor);
+					}
+					break;
+				}
 				case DISPLAY:
-				case CHECKABLE:
 				default: {
 					mBorderPaint.setColor(borderColor);
 					mBackgroundPaint.setColor(backgroundColor);
@@ -986,7 +1053,7 @@ public class TagGroup extends ViewGroup {
 			canvas.drawRect(mHorizontalBlankFillRectF, mBackgroundPaint);
 			canvas.drawRect(mVerticalBlankFillRectF, mBackgroundPaint);
 
-			if (isChecked) {
+			if (mode == Mode.APPEND && isChecked) {
 				canvas.save();
 				canvas.rotate(45, mCheckedMarkerBound.centerX(), mCheckedMarkerBound.centerY());
 				canvas.drawLine(mCheckedMarkerBound.left, mCheckedMarkerBound.centerY(),
@@ -1042,7 +1109,7 @@ public class TagGroup extends ViewGroup {
 					bottom - h / 2 + m / 2);
 
 			// Ensure the checked mark drawing region is correct across screen orientation changes.
-			if (isChecked) {
+			if (mode == Mode.APPEND && isChecked) {
 				setPadding(horizontalPadding,
 						verticalPadding,
 						(int) (horizontalPadding + h / 2.5f + CHECKED_MARKER_OFFSET),
