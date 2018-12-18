@@ -11,7 +11,10 @@ android {
     productFlavors {
     }
 }
-// Used to push in maven
-//apply from: '../maven-push.gradle'
+
 dependencies {
 }
+
+apply from: 'remote-publish.gradle'
+
+

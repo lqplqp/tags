@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup;
+package com.light.android.taggroup;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

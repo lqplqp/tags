@@ -1,0 +1,14 @@
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    userOrg = 'zhangliang'
+    repoName = 'android'
+    groupId = 'com.liang.android'
+    artifactId = 'tags'
+    publishVersion = '0.9.0'
+//    uploadName = 'tags'
+    desc = 'a nice tag viewgroup for android'
+//    website = 'https://github.com/zhangliangnbu/tags'
+}
+
+// ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false

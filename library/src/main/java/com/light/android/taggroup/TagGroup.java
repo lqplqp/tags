@@ -1,4 +1,4 @@
-package me.gujun.android.taggroup;
+package com.light.android.taggroup;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -69,8 +69,17 @@ public class TagGroup extends ViewGroup {
 	private final float default_vertical_padding;
 
 	public enum Mode {
+		/**
+		 * 展示模式。只是展示
+		 */
 		DISPLAY,
+		/**
+		 * 可选模式。可以选中一个或多个标签
+		 */
 		CHECKABLE,
+		/**
+		 * 添加模式。可以添加和删除标签
+		 */
 		APPEND
 	}
 
@@ -563,10 +572,16 @@ public class TagGroup extends ViewGroup {
 		mOnTagClickListener = l;
 	}
 
+	/**
+	 * @param mode tags模式
+	 */
 	public void setMode(Mode mode) {
 		this.mode = mode;
 	}
 
+	/**
+	 * @return tag view list.可以获取更多的信息
+	 */
 	public List<TagView> getTagViews() {
 		final int count = getChildCount();
 		List<TagView> list = new ArrayList<>();
@@ -577,6 +592,9 @@ public class TagGroup extends ViewGroup {
 		return list;
 	}
 
+	/**
+	 * @return 获取选中的tag view list
+	 */
 	public List<TagView> getCheckedTagViews() {
 		final int count = getChildCount();
 		List<TagView> list = new ArrayList<>();
@@ -589,6 +607,9 @@ public class TagGroup extends ViewGroup {
 		return list;
 	}
 
+	/**
+	 * @return 获取选中的tag文本集合
+	 */
 	public List<String> getCheckedTags() {
 		final int count = getChildCount();
 		List<String> list = new ArrayList<>();
@@ -601,6 +622,9 @@ public class TagGroup extends ViewGroup {
 		return list;
 	}
 
+	/**
+	 * @return 获取选中的tag索引集合
+	 */
 	public List<Integer> getCheckedIndexList() {
 		final int count = getChildCount();
 		List<Integer> list = new ArrayList<>();
@@ -613,6 +637,9 @@ public class TagGroup extends ViewGroup {
 		return list;
 	}
 
+	/**
+	 * @param tagView 待删除的tagview
+	 */
 	protected void deleteTag(TagView tagView) {
 		removeView(tagView);
 		if (mOnTagChangeListener != null) {
