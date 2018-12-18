@@ -16,7 +16,7 @@
 #### Gradle
 ```groovy
 dependencies {
-   compile 'com.liang.android:tags:0.9.0'
+   implementation 'com.liang.android:tags:0.9.0'
 }
 ```
 
@@ -34,9 +34,9 @@ dependencies {
 
 Use it in your own code:
 ```xml
-    <com.light.android.taggroup.TagGroup
-        android:id="@+id/tag_group_checkable"
-        style="@style/TagGroup"/>
+<com.light.android.taggroup.TagGroup
+	android:id="@+id/tag_group_checkable"
+	style="@style/TagGroup"/>
 ```
 
 ```kotlin
@@ -48,7 +48,7 @@ tag_group_checkable.setOnTagClickListener {
 ```
 # 其他
 
-请见说明请见 [AndroidTagGroup](https://github.com/2dxgujun/AndroidTagGroup) 
+其他说明请见 [AndroidTagGroup](https://github.com/2dxgujun/AndroidTagGroup) 
 
 # Developed By
 
