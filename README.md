@@ -4,6 +4,12 @@
 
 # 前言
 
+2019年03月15日14:44:44
+* 在原有项目上进行了Fork提供了大家都需要的圆角属性，新增可选属性，使用        app:atg_isCheckMode="true"
+替代tag_group_checkable.setMode(TagGroup.Mode.CHECKABLE)
+  atg_bgRadious  调整圆角大小
+  isCheckMode    选取模式
+
 这是从[AndroidTagGroup](https://github.com/2dxgujun/AndroidTagGroup) Fork的项目，在其基础上，做了部分修改
 
 * 增加了可选中模式。目前模式有三种：展示、可选、修改。

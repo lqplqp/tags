@@ -1,6 +1,7 @@
 package com.light.android.taggroup;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +11,11 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Editable;
@@ -61,6 +67,7 @@ public class TagGroup extends ViewGroup {
 	private final int default_checked_marker_color = Color.WHITE;
 	private final int default_checked_background_color = Color.rgb(0x49, 0xC1, 0x20);
 	private final int default_pressed_background_color = Color.rgb(0xED, 0xED, 0xED);
+	private final float default_background_radious = -1f;
 	private final float default_border_stroke_width;
 	private final float default_text_size;
 	private final float default_horizontal_spacing;
@@ -89,6 +96,8 @@ public class TagGroup extends ViewGroup {
 	 * The text to be displayed when the text of the INPUT tag is empty.
 	 */
 	private CharSequence inputHint;
+
+	private float bgRadious;
 
 	/**
 	 * The tag outline border color.
@@ -185,6 +194,7 @@ public class TagGroup extends ViewGroup {
 	 */
 	private OnTagClickListener mOnTagClickListener;
 
+
 	/**
 	 * Listener used to handle tag click event.
 	 */
@@ -211,8 +221,17 @@ public class TagGroup extends ViewGroup {
 		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TagGroup, defStyleAttr, R.style.TagGroup);
 		try {
 			boolean isAppendMode = a.getBoolean(R.styleable.TagGroup_atg_isAppendMode, false);
-			mode = isAppendMode ? Mode.APPEND : Mode.DISPLAY;
+			boolean isCheckMode = a.getBoolean(R.styleable.TagGroup_atg_isCheckMode , false);
+
+			if (isAppendMode && isCheckMode){
+				throw new RuntimeException("can't select two mode");
+			}
+
+			mode = (!isCheckMode && isAppendMode) ? Mode.APPEND : Mode.DISPLAY;
+			mode = (!isAppendMode && isCheckMode) ? Mode.CHECKABLE : Mode.DISPLAY;
+
 			inputHint = a.getText(R.styleable.TagGroup_atg_inputHint);
+			bgRadious = a.getDimension(R.styleable.TagGroup_atg_bgRadious , default_background_radious);
 			borderColor = a.getColor(R.styleable.TagGroup_atg_borderColor, default_border_color);
 			textColor = a.getColor(R.styleable.TagGroup_atg_textColor, default_text_color);
 			backgroundColor = a.getColor(R.styleable.TagGroup_atg_backgroundColor, default_background_color);
@@ -1073,23 +1092,36 @@ public class TagGroup extends ViewGroup {
 
 		@Override
 		protected void onDraw(Canvas canvas) {
-			canvas.drawArc(mLeftCornerRectF, -180, 90, true, mBackgroundPaint);
-			canvas.drawArc(mLeftCornerRectF, -270, 90, true, mBackgroundPaint);
-			canvas.drawArc(mRightCornerRectF, -90, 90, true, mBackgroundPaint);
-			canvas.drawArc(mRightCornerRectF, 0, 90, true, mBackgroundPaint);
-			canvas.drawRect(mHorizontalBlankFillRectF, mBackgroundPaint);
-			canvas.drawRect(mVerticalBlankFillRectF, mBackgroundPaint);
 
-			if (mode == Mode.APPEND && isChecked) {
-				canvas.save();
-				canvas.rotate(45, mCheckedMarkerBound.centerX(), mCheckedMarkerBound.centerY());
-				canvas.drawLine(mCheckedMarkerBound.left, mCheckedMarkerBound.centerY(),
-						mCheckedMarkerBound.right, mCheckedMarkerBound.centerY(), mCheckedMarkerPaint);
-				canvas.drawLine(mCheckedMarkerBound.centerX(), mCheckedMarkerBound.top,
-						mCheckedMarkerBound.centerX(), mCheckedMarkerBound.bottom, mCheckedMarkerPaint);
-				canvas.restore();
-			}
-			canvas.drawPath(mBorderPath, mBorderPaint);
+		    if (bgRadious<0){
+                canvas.drawArc(mLeftCornerRectF, -180, 90, true, mBackgroundPaint);
+                canvas.drawArc(mLeftCornerRectF, -270, 90, true, mBackgroundPaint);
+                canvas.drawArc(mRightCornerRectF, -90, 90, true, mBackgroundPaint);
+                canvas.drawArc(mRightCornerRectF, 0, 90, true, mBackgroundPaint);
+                canvas.drawRect(mHorizontalBlankFillRectF, mBackgroundPaint);
+                canvas.drawRect(mVerticalBlankFillRectF, mBackgroundPaint);
+
+                if (mode == Mode.APPEND && isChecked) {
+                    canvas.save();
+                    canvas.rotate(0, mCheckedMarkerBound.centerX(), mCheckedMarkerBound.centerY());
+                    canvas.drawLine(mCheckedMarkerBound.left, mCheckedMarkerBound.centerY(),
+                            mCheckedMarkerBound.right, mCheckedMarkerBound.centerY(), mCheckedMarkerPaint);
+                    canvas.drawLine(mCheckedMarkerBound.centerX(), mCheckedMarkerBound.top,
+                            mCheckedMarkerBound.centerX(), mCheckedMarkerBound.bottom, mCheckedMarkerPaint);
+                    canvas.restore();
+                }
+
+                canvas.drawPath(mBorderPath, mBorderPaint);
+            }else {
+                GradientDrawable gradientDrawable = new GradientDrawable();
+                gradientDrawable.setColor(mBackgroundPaint.getColor());
+                gradientDrawable.setCornerRadius(bgRadious);
+                gradientDrawable.setStroke((int)borderStrokeWidth , borderColor);
+                TagView.this.setBackgroundDrawable(gradientDrawable);
+            }
+
+
+
 			super.onDraw(canvas);
 		}
 

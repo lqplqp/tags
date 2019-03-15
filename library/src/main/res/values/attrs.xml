@@ -2,9 +2,14 @@
     <declare-styleable name="TagGroup">
         <!-- Whether the tag group is in append mode. -->
         <attr name="atg_isAppendMode" format="boolean" />
+
+        <!--是否为选择模式-->
+        <attr name="atg_isCheckMode" format="boolean" />
+
         <!-- If the tag group is in append mode, what the hint of input tag. -->
         <attr name="atg_inputHint" format="string" />
 
+        <attr name="atg_bgRadious" format="dimension"/>
         <!-- The tag view outline border color. -->
         <attr name="atg_borderColor" format="color" />
         <!-- The tag view text color. -->

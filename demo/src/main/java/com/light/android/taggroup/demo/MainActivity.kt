@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         tag_group.setTags(texts)
         tag_group.setOnTagClickListener { Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show() }
 
-        tag_group_checkable.setMode(TagGroup.Mode.CHECKABLE)
+//        tag_group_checkable.setMode(TagGroup.Mode.CHECKABLE)
         tag_group_checkable.setTags(texts)
         tag_group_checkable.setOnTagClickListener {
             Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
